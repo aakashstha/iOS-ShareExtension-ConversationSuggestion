@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Intents
 
 class ViewController: UIViewController {
 
@@ -14,6 +15,44 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
     }
 
-
+    @IBAction func showIntentButton1(_ sender: Any) {
+        generateRecipient(conversationIdentifier: "sampleConversationIdentifier_ID1", displayName: "Prakash Shrestha", img: "image1")
+    }
+    
+    @IBAction func showIntentButton2(_ sender: Any) {
+        generateRecipient(conversationIdentifier: "sampleConversationIdentifier_ID2", displayName: "Mohit Shrestha", img: "")
+    }
+    
+    func generateRecipient(conversationIdentifier:String, displayName:String, img:String) {
+//        Create an INSendMessageIntent to donate an intent for a conversation
+//        let conversationID = self.conversationIdentifier?.uuidString
+        
+        let conversationID = conversationIdentifier
+        let groupName = INSpeakableString(spokenPhrase: displayName)
+//         Add the user's avatar to the intent.
+        let image = INImage(named: "image133")
+        
+        let sendMessageIntent = INSendMessageIntent(recipients: nil,
+                                                    content: nil,
+                                                    speakableGroupName: groupName,
+                                                    conversationIdentifier: conversationID,
+                                                    serviceName: nil,
+                                                    sender: nil)
+            
+        sendMessageIntent.setImage(image, forParameterNamed: \.speakableGroupName)
+        
+//         Donate the intent.
+        let interaction = INInteraction(intent: sendMessageIntent, response: nil)
+        interaction.donate(completion: { error in
+            if error != nil {
+//                 Add error handling here.
+            } else {
+//                 Do something, for example, send the content to a contact.
+                print("INSendMessageIntent has been donated Successfully!!")
+            }
+        })
+    }
+    
+    
 }
 
